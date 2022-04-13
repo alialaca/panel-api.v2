@@ -100,7 +100,7 @@ model GONDERIM_TIPLERI {
   SATIS_TEKLIFLERI SATIS_TEKLIFLERI[]
 }
 
-model GOREVLER {
+model Gorevler {
   id               Int               @id @default(autoincrement())
   proje            Int
   isim             String            @db.VarChar(124)
@@ -113,19 +113,23 @@ model GOREVLER {
   oncelik          Int
   ustgorev         Int?
   silindi          Boolean           @default(false)
-  GOREV_TIPLERI    GOREV_TIPLERI     @relation(fields: [gorev_tip], references: [gtip_id], onUpdate: Restrict, map: "GOREVLER_ibfk_3")
-  PERSONELLER      PERSONELLER       @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "GOREVLER_ibfk_1")
-  ONCELIKLER       ONCELIKLER        @relation(fields: [oncelik], references: [id], onUpdate: Restrict, map: "GOREVLER_ibfk_4")
-  PROJELER         PROJELER          @relation(fields: [proje], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "GOREVLER_ibfk_2")
-  GOREV_ATAMALAR   GOREV_ATAMALAR[]
-  GOREV_DURUMLAR   GOREV_DURUMLAR[]
-  GOREV_ETIKETLER  GOREV_ETIKETLER[]
-  GOREV_YORUMLAR   GOREV_YORUMLAR[]
+  Tip              GOREV_TIPLERI     @relation(fields: [gorev_tip], references: [gtip_id], onUpdate: Restrict, map: "GOREVLER_ibfk_3")
+  Olusturan        PERSONELLER       @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "GOREVLER_ibfk_1")
+  Oncelik          ONCELIKLER        @relation(fields: [oncelik], references: [id], onUpdate: Restrict, map: "GOREVLER_ibfk_4")
+  Proje            Projeler          @relation(fields: [proje], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "GOREVLER_ibfk_2")
+  UstGorev         Gorevler?         @relation("GOREVLERToGOREVLER_ustgorev", fields: [ustgorev], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "GOREVLER_GOREVLER_id_fk")
+  AltGorevler      Gorevler[]        @relation("GOREVLERToGOREVLER_ustgorev")
+  Atamalar         GOREV_ATAMALAR[]
+  Durumlar         GOREV_DURUMLAR[]
+  Etiketler        GOREV_ETIKETLER[]
+  Yorumlar         GOREV_YORUMLAR[]
 
+  @@index([ustgorev], map: "GOREVLER_GOREVLER_id_fk")
   @@index([proje], map: "GOREVLER_ibfk_2")
   @@index([olusturan], map: "gorev_olusturan")
   @@index([oncelik], map: "gorev_oncelik")
   @@index([gorev_tip], map: "gorev_tip")
+  @@map("GOREVLER")
 }
 
 model GOREV_ATAMALAR {
@@ -136,7 +140,7 @@ model GOREV_ATAMALAR {
   tip                                               Int
   gorev                                             Int
   PERSONELLER_GOREV_ATAMALAR_atananToPERSONELLER    PERSONELLER   @relation("GOREV_ATAMALAR_atananToPERSONELLER", fields: [atanan], references: [personel_id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_3")
-  GOREVLER                                          GOREVLER      @relation(fields: [gorev], references: [id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_2")
+  Gorevler                                          Gorevler      @relation(fields: [gorev], references: [id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_2")
   PERSONELLER_GOREV_ATAMALAR_olusturanToPERSONELLER PERSONELLER   @relation("GOREV_ATAMALAR_olusturanToPERSONELLER", fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_4")
   ATAMA_TIPLERI                                     ATAMA_TIPLERI @relation(fields: [tip], references: [id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_1")
 
@@ -153,7 +157,7 @@ model GOREV_DURUMLAR {
   gorev                Int
   durum                Int
   GOREV_DURUMLAR       GOREV_DURUMLAR   @relation("GOREV_DURUMLARToGOREV_DURUMLAR_durum", fields: [durum], references: [id], onDelete: Cascade, map: "GOREV_DURUMLAR_GOREV_DURUMLAR_id_fk")
-  GOREVLER             GOREVLER         @relation(fields: [gorev], references: [id], onDelete: Cascade, map: "GOREV_DURUMLAR_GOREVLER_id_fk")
+  Gorevler             Gorevler         @relation(fields: [gorev], references: [id], onDelete: Cascade, map: "GOREV_DURUMLAR_GOREVLER_id_fk")
   PERSONELLER          PERSONELLER      @relation(fields: [olusturan], references: [personel_id], onDelete: Cascade, map: "GOREV_DURUMLAR_PERSONELLER_personel_id_fk")
   other_GOREV_DURUMLAR GOREV_DURUMLAR[] @relation("GOREV_DURUMLARToGOREV_DURUMLAR_durum")
 
@@ -169,7 +173,7 @@ model GOREV_ETIKETLER {
   gorev            Int
   etiket           Int
   ETIKETLER        ETIKETLER @relation(fields: [etiket], references: [id], onUpdate: Restrict, map: "GOREV_ETIKETLER_ETIKETLER_id_fk")
-  GOREVLER         GOREVLER  @relation(fields: [gorev], references: [id], onUpdate: Restrict, map: "GOREV_ETIKETLER_GOREVLER_id_fk")
+  Gorevler         Gorevler  @relation(fields: [gorev], references: [id], onUpdate: Restrict, map: "GOREV_ETIKETLER_GOREVLER_id_fk")
 
   @@unique([gorev, etiket], map: "GOREV_ETIKETLER_gorev_etiket_uindex")
   @@index([etiket], map: "GOREV_ETIKETLER_ETIKETLER_id_fk")
@@ -179,14 +183,14 @@ model GOREV_TIPLERI {
   gtip_id       Int        @id @default(autoincrement())
   gtip_isim     String     @db.VarChar(24)
   gtip_aciklama String?    @db.VarChar(256)
-  GOREVLER      GOREVLER[]
+  Gorevler      Gorevler[]
 }
 
 model GOREV_YORUMLAR {
   id       Int      @id @unique(map: "GOREV_YORUMLAR_id_uindex") @default(autoincrement())
   gorev    Int
   yorum    Int
-  GOREVLER GOREVLER @relation(fields: [gorev], references: [id], onUpdate: Restrict, map: "GOREV_YORUMLAR_GOREVLER_id_fk")
+  Gorevler Gorevler @relation(fields: [gorev], references: [id], onUpdate: Restrict, map: "GOREV_YORUMLAR_GOREVLER_id_fk")
   YORUMLAR YORUMLAR @relation(fields: [yorum], references: [id], onUpdate: Restrict, map: "GOREV_YORUMLAR_YORUMLAR_id_fk")
 
   @@index([yorum], map: "GOREV_YORUMLAR_YORUMLAR_id_fk")
@@ -326,7 +330,7 @@ model ONCELIKLER {
   simge            String     @default("picture-outline") @db.VarChar(24)
   renk             String     @default("info") @db.VarChar(24)
   silindi          Boolean    @default(false)
-  GOREVLER         GOREVLER[]
+  Gorevler         Gorevler[]
 }
 
 model PERSONELLER {
@@ -342,7 +346,7 @@ model PERSONELLER {
   PERSONEL_UNVANLAR                                    PERSONEL_UNVANLAR  @relation(fields: [personel_unvan], references: [punvan_id], onUpdate: Restrict, map: "PERSONELLER_ibfk_1")
   ETIKETLER                                            ETIKETLER[]
   FIRMALAR                                             FIRMALAR[]
-  GOREVLER                                             GOREVLER[]
+  Gorevler                                             Gorevler[]
   GOREV_ATAMALAR_GOREV_ATAMALAR_atananToPERSONELLER    GOREV_ATAMALAR[]   @relation("GOREV_ATAMALAR_atananToPERSONELLER")
   GOREV_ATAMALAR_GOREV_ATAMALAR_olusturanToPERSONELLER GOREV_ATAMALAR[]   @relation("GOREV_ATAMALAR_olusturanToPERSONELLER")
   GOREV_DURUMLAR                                       GOREV_DURUMLAR[]
@@ -350,7 +354,7 @@ model PERSONELLER {
   ITHALATLAR                                           ITHALATLAR[]
   ITHALAT_DURUMLAR                                     ITHALAT_DURUMLAR[]
   KISILER                                              KISILER[]
-  PROJELER                                             PROJELER[]
+  Projeler                                             Projeler[]
   SATIS_TEKLIFLERI                                     SATIS_TEKLIFLERI[]
   SERVIS_DURUMLAR                                      SERVIS_DURUMLAR[]
   SERVIS_KAYITLAR                                      SERVIS_KAYITLAR[]
@@ -368,7 +372,7 @@ model PERSONEL_UNVANLAR {
   PERSONELLER     PERSONELLER[]
 }
 
-model PROJELER {
+model Projeler {
   id               Int         @id @default(autoincrement())
   olusturma_tarihi DateTime    @default(now()) @db.DateTime(0)
   olusturan        Int
@@ -378,10 +382,12 @@ model PROJELER {
   renk             String?     @db.VarChar(16)
   sonlandi         Boolean     @default(false)
   silindi          Boolean     @default(false)
-  PERSONELLER      PERSONELLER @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "PROJELER_ibfk_1")
-  GOREVLER         GOREVLER[]
+  Olusturan        PERSONELLER @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "PROJELER_ibfk_1")
+  Gorevler         Gorevler[]
+
 
   @@index([olusturan], map: "proje_olusturan")
+  @@map("PROJELER")
 }
 
 model RAKIP_FIRMALAR {

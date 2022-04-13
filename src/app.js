@@ -6,8 +6,7 @@ const logger = require('morgan');
 const JWT = require('express-jwt')
 require('custom-env').env()
 
-const indexRouter = require('./server/routes/index');
-const gorevRouter = require('./server/routes/gorevler');
+const Routes = require('./routes');
 
 const app = express();
 
@@ -25,8 +24,7 @@ app.use(JWT({
     }
 ))
 
-app.use('/', indexRouter);
-app.use('/gorev', gorevRouter);
+app.use('/proje', Routes.proje);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

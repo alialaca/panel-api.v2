@@ -3,9 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development nodemon ./bin/www --watch server",
+    "dev": "cross-env NODE_ENV=development nodemon ./bin/www --watch src",
     "prisma:format": "npx prisma format",
     "prisma:generate": "npx prisma generate",
+    "prisma:pull": "npx prisma db pull",
     "test": "cross-env NODE_ENV=test jest -i --colors --verbose --detectOpenHandles"
   },
   "dependencies": {
@@ -17,6 +18,7 @@
     "express": "~4.16.1",
     "express-jwt": "^6.1.1",
     "http-errors": "~1.6.3",
+    "http-status": "^1.5.0",
     "morgan": "~1.9.1",
     "pug": "^3.0.2"
   },
