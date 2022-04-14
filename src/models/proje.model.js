@@ -1,6 +1,7 @@
-const prisma = require('../services/mysql')()
+const BaseModel = require('../utils/classes/baseModel')
 
-const selectField = {
+const TABLE_NAME = 'projeler'
+const fields = {
     id: true,
     isim: true,
     aciklama: true,
@@ -26,37 +27,4 @@ const selectField = {
     }
 }
 
-const liste = (fields = selectField) => {
-    return prisma.projeler.findMany({
-        select: fields
-    })
-}
-
-const ekle = (data, fields = selectField) => {
-    return prisma.projeler.create({
-        data: data,
-        select: fields
-    })
-}
-
-const sil = (id) => {
-    return prisma.projeler.delete({
-        where: {id},
-        select: selectField
-    })
-}
-
-const guncelle = ({id, ...data}, fields= selectField) => {
-    return prisma.projeler.update({
-        where: {id},
-        data,
-        select: fields
-    })
-}
-
-module.exports = {
-    liste,
-    ekle,
-    guncelle,
-    sil
-}
+module.exports = new BaseModel(TABLE_NAME, fields)

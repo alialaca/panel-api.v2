@@ -1,7 +1,7 @@
 const prisma = require('../services/mysql')()
 
 const liste = () => {
-    return prisma.gOREVLER.findMany()
+    return prisma.gorevler.findMany()
 }
 
 module.exports = {
