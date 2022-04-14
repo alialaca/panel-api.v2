@@ -12,12 +12,14 @@ model ACIL_ALACAK {
   alacak_tutar Int
 }
 
-model ATAMA_TIPLERI {
+model AtamaTipleri {
   id             Int              @id @unique(map: "ATAMA_TIPLERI_id_uindex") @default(autoincrement())
   isim           String           @unique(map: "ATAMA_TIPLERI_isim_uindex") @db.VarChar(24)
   aciklama       String?          @db.VarChar(128)
   simge          String?          @db.VarChar(48)
   GOREV_ATAMALAR GOREV_ATAMALAR[]
+
+  @@map("ATAMA_TIPLERI")
 }
 
 model BIRIMLER {
@@ -40,12 +42,14 @@ model BIRIM_TIPLERI {
   BIRIMLER      BIRIMLER[]
 }
 
-model DURUM_TIPLERI {
+model DurumTipleri {
   id       Int     @id @default(autoincrement())
   isim     String  @db.VarChar(24)
   aciklama String? @db.VarChar(256)
   simge    String  @default("time") @db.VarChar(24)
   renk     String  @default("info") @db.VarChar(10)
+
+  @@map("DURUM_TIPLERI")
 }
 
 model ETIKETLER {
@@ -115,11 +119,11 @@ model Gorevler {
   silindi          Boolean           @default(false)
   Tip              GOREV_TIPLERI     @relation(fields: [gorev_tip], references: [gtip_id], onUpdate: Restrict, map: "GOREVLER_ibfk_3")
   Olusturan        PERSONELLER       @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "GOREVLER_ibfk_1")
-  Oncelik          ONCELIKLER        @relation(fields: [oncelik], references: [id], onUpdate: Restrict, map: "GOREVLER_ibfk_4")
+  Oncelik          Oncelikler        @relation(fields: [oncelik], references: [id], onUpdate: Restrict, map: "GOREVLER_ibfk_4")
   Proje            Projeler          @relation(fields: [proje], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "GOREVLER_ibfk_2")
   UstGorev         Gorevler?         @relation("GOREVLERToGOREVLER_ustgorev", fields: [ustgorev], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "GOREVLER_GOREVLER_id_fk")
   AltGorevler      Gorevler[]        @relation("GOREVLERToGOREVLER_ustgorev")
-  Atamalar         GOREV_ATAMALAR[]
+  AtamaTipleri     GOREV_ATAMALAR[]
   Durumlar         GOREV_DURUMLAR[]
   Etiketler        GOREV_ETIKETLER[]
   Yorumlar         GOREV_YORUMLAR[]
@@ -133,16 +137,16 @@ model Gorevler {
 }
 
 model GOREV_ATAMALAR {
-  id                                                Int           @id @unique(map: "GOREV_ATAMALAR_id_uindex") @default(autoincrement())
+  id                                                Int          @id @unique(map: "GOREV_ATAMALAR_id_uindex") @default(autoincrement())
   olusturan                                         Int
-  olusturma_tarihi                                  DateTime      @default(now()) @db.DateTime(0)
+  olusturma_tarihi                                  DateTime     @default(now()) @db.DateTime(0)
   atanan                                            Int
   tip                                               Int
   gorev                                             Int
-  PERSONELLER_GOREV_ATAMALAR_atananToPERSONELLER    PERSONELLER   @relation("GOREV_ATAMALAR_atananToPERSONELLER", fields: [atanan], references: [personel_id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_3")
-  Gorevler                                          Gorevler      @relation(fields: [gorev], references: [id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_2")
-  PERSONELLER_GOREV_ATAMALAR_olusturanToPERSONELLER PERSONELLER   @relation("GOREV_ATAMALAR_olusturanToPERSONELLER", fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_4")
-  ATAMA_TIPLERI                                     ATAMA_TIPLERI @relation(fields: [tip], references: [id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_1")
+  PERSONELLER_GOREV_ATAMALAR_atananToPERSONELLER    PERSONELLER  @relation("GOREV_ATAMALAR_atananToPERSONELLER", fields: [atanan], references: [personel_id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_3")
+  Gorevler                                          Gorevler     @relation(fields: [gorev], references: [id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_2")
+  PERSONELLER_GOREV_ATAMALAR_olusturanToPERSONELLER PERSONELLER  @relation("GOREV_ATAMALAR_olusturanToPERSONELLER", fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_4")
+  AtamaTipleri                                      AtamaTipleri @relation(fields: [tip], references: [id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_1")
 
   @@index([atanan], map: "atanan")
   @@index([gorev], map: "gorev")
@@ -323,14 +327,16 @@ model ODEME_PLANLARI {
   SATIS_TEKLIFLERI SATIS_TEKLIFLERI[]
 }
 
-model ONCELIKLER {
+model Oncelikler {
   id               Int        @id @default(autoincrement())
   isim             String     @db.VarChar(24)
-  oncelik_aciklama String?    @db.VarChar(256)
+  aciklama         String?    @db.VarChar(256)
   simge            String     @default("picture-outline") @db.VarChar(24)
   renk             String     @default("info") @db.VarChar(24)
   silindi          Boolean    @default(false)
   Gorevler         Gorevler[]
+
+  @@map("ONCELIKLER")
 }
 
 model PERSONELLER {
