@@ -58,7 +58,7 @@ model ETIKETLER {
   olusturan        Int
   olusturma_tarihi DateTime?         @default(now()) @db.DateTime(0)
   silindi          Boolean           @default(false)
-  PERSONELLER      PERSONELLER       @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "ETIKETLER_PERSONELLER_personel_id_fk")
+  Personeller      Personeller       @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "ETIKETLER_PERSONELLER_personel_id_fk")
   GOREV_ETIKETLER  GOREV_ETIKETLER[]
 
   @@index([olusturan], map: "ETIKETLER_PERSONELLER_personel_id_fk")
@@ -75,7 +75,7 @@ model FIRMALAR {
   firma_durum                                       Int
   firma_rakip                                       Int?
   FIRMA_DURUMLARI                                   FIRMA_DURUMLARI    @relation(fields: [firma_durum], references: [fdurum_id], onUpdate: Restrict, map: "FIRMALAR_ibfk_1")
-  PERSONELLER                                       PERSONELLER        @relation(fields: [firma_olusturan], references: [personel_id], onUpdate: Restrict, map: "FIRMALAR_ibfk_3")
+  Personeller                                       Personeller        @relation(fields: [firma_olusturan], references: [personel_id], onUpdate: Restrict, map: "FIRMALAR_ibfk_3")
   RAKIP_FIRMALAR                                    RAKIP_FIRMALAR?    @relation(fields: [firma_rakip], references: [rakip_id], onDelete: Restrict, onUpdate: Restrict, map: "FIRMALAR_ibfk_4")
   SEKTORLER                                         SEKTORLER          @relation(fields: [firma_sektor], references: [sektor_id], onUpdate: Restrict, map: "FIRMALAR_ibfk_2")
   ITHALATLAR_FIRMALARToITHALATLAR_ith_nakliye_firma ITHALATLAR[]       @relation("FIRMALARToITHALATLAR_ith_nakliye_firma")
@@ -118,7 +118,7 @@ model Gorevler {
   ustgorev         Int?
   silindi          Boolean           @default(false)
   Tip              GOREV_TIPLERI     @relation(fields: [gorev_tip], references: [gtip_id], onUpdate: Restrict, map: "GOREVLER_ibfk_3")
-  Olusturan        PERSONELLER       @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "GOREVLER_ibfk_1")
+  Olusturan        Personeller       @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "GOREVLER_ibfk_1")
   Oncelik          Oncelikler        @relation(fields: [oncelik], references: [id], onUpdate: Restrict, map: "GOREVLER_ibfk_4")
   Proje            Projeler          @relation(fields: [proje], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "GOREVLER_ibfk_2")
   UstGorev         Gorevler?         @relation("GOREVLERToGOREVLER_ustgorev", fields: [ustgorev], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "GOREVLER_GOREVLER_id_fk")
@@ -143,9 +143,9 @@ model GOREV_ATAMALAR {
   atanan                                            Int
   tip                                               Int
   gorev                                             Int
-  PERSONELLER_GOREV_ATAMALAR_atananToPERSONELLER    PERSONELLER  @relation("GOREV_ATAMALAR_atananToPERSONELLER", fields: [atanan], references: [personel_id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_3")
+  PERSONELLER_GOREV_ATAMALAR_atananToPERSONELLER    Personeller  @relation("GOREV_ATAMALAR_atananToPERSONELLER", fields: [atanan], references: [personel_id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_3")
   Gorevler                                          Gorevler     @relation(fields: [gorev], references: [id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_2")
-  PERSONELLER_GOREV_ATAMALAR_olusturanToPERSONELLER PERSONELLER  @relation("GOREV_ATAMALAR_olusturanToPERSONELLER", fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_4")
+  PERSONELLER_GOREV_ATAMALAR_olusturanToPERSONELLER Personeller  @relation("GOREV_ATAMALAR_olusturanToPERSONELLER", fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_4")
   AtamaTipleri                                      AtamaTipleri @relation(fields: [tip], references: [id], onUpdate: Restrict, map: "GOREV_ATAMALAR_ibfk_1")
 
   @@index([atanan], map: "atanan")
@@ -162,7 +162,7 @@ model GOREV_DURUMLAR {
   durum                Int
   GOREV_DURUMLAR       GOREV_DURUMLAR   @relation("GOREV_DURUMLARToGOREV_DURUMLAR_durum", fields: [durum], references: [id], onDelete: Cascade, map: "GOREV_DURUMLAR_GOREV_DURUMLAR_id_fk")
   Gorevler             Gorevler         @relation(fields: [gorev], references: [id], onDelete: Cascade, map: "GOREV_DURUMLAR_GOREVLER_id_fk")
-  PERSONELLER          PERSONELLER      @relation(fields: [olusturan], references: [personel_id], onDelete: Cascade, map: "GOREV_DURUMLAR_PERSONELLER_personel_id_fk")
+  Personeller          Personeller      @relation(fields: [olusturan], references: [personel_id], onDelete: Cascade, map: "GOREV_DURUMLAR_PERSONELLER_personel_id_fk")
   other_GOREV_DURUMLAR GOREV_DURUMLAR[] @relation("GOREV_DURUMLARToGOREV_DURUMLAR_durum")
 
   @@index([gorev], map: "GOREV_DURUMLAR_GOREVLER_id_fk")
@@ -195,7 +195,7 @@ model GOREV_YORUMLAR {
   gorev    Int
   yorum    Int
   Gorevler Gorevler @relation(fields: [gorev], references: [id], onUpdate: Restrict, map: "GOREV_YORUMLAR_GOREVLER_id_fk")
-  YORUMLAR YORUMLAR @relation(fields: [yorum], references: [id], onUpdate: Restrict, map: "GOREV_YORUMLAR_YORUMLAR_id_fk")
+  Yorumlar Yorumlar @relation(fields: [yorum], references: [id], onUpdate: Restrict, map: "GOREV_YORUMLAR_YORUMLAR_id_fk")
 
   @@index([yorum], map: "GOREV_YORUMLAR_YORUMLAR_id_fk")
   @@index([gorev, yorum], map: "GOREV_YORUMLAR_gorev_yorum_index")
@@ -209,7 +209,7 @@ model ILETISIMLER {
   iletisim_kisi             Int
   iletisim_deger            String           @db.VarChar(128)
   KISILER                   KISILER          @relation(fields: [iletisim_kisi], references: [kisi_id], onDelete: Cascade, onUpdate: Restrict, map: "ILETISIMLER_ibfk_2")
-  PERSONELLER               PERSONELLER      @relation(fields: [iletisim_olusturan], references: [personel_id], onUpdate: Restrict, map: "ILETISIMLER_ibfk_3")
+  Personeller               Personeller      @relation(fields: [iletisim_olusturan], references: [personel_id], onUpdate: Restrict, map: "ILETISIMLER_ibfk_3")
   ILETISIM_TIPLERI          ILETISIM_TIPLERI @relation(fields: [iletisim_tip], references: [itip_id], onUpdate: Restrict, map: "ILETISIMLER_ibfk_1")
 
   @@index([iletisim_kisi], map: "ILETISIMLER_ibfk_2")
@@ -241,7 +241,7 @@ model ITHALATLAR {
   ith_beyanname_no                                Int?
   FIRMALAR_FIRMALARToITHALATLAR_ith_nakliye_firma FIRMALAR?                @relation("FIRMALARToITHALATLAR_ith_nakliye_firma", fields: [ith_nakliye_firma], references: [firma_id], onDelete: Restrict, onUpdate: Restrict, map: "ITHALATLAR_ibfk_3")
   ITHALAT_NAKLIYE_TIPLERI                         ITHALAT_NAKLIYE_TIPLERI? @relation(fields: [ith_nakliye_tip], references: [ith_nak_id], onDelete: Restrict, onUpdate: Restrict, map: "ITHALATLAR_ibfk_2")
-  PERSONELLER                                     PERSONELLER              @relation(fields: [ith_olusturan], references: [personel_id], onUpdate: Restrict, map: "ITHALATLAR_ibfk_4")
+  Personeller                                     Personeller              @relation(fields: [ith_olusturan], references: [personel_id], onUpdate: Restrict, map: "ITHALATLAR_ibfk_4")
   FIRMALAR_FIRMALARToITHALATLAR_ith_tedarikci     FIRMALAR                 @relation("FIRMALARToITHALATLAR_ith_tedarikci", fields: [ith_tedarikci], references: [firma_id], onUpdate: Restrict, map: "ITHALATLAR_ibfk_1")
   ITHALAT_DURUMLAR                                ITHALAT_DURUMLAR[]
 
@@ -260,7 +260,7 @@ model ITHALAT_DURUMLAR {
   ith_durum_aciklama         String?                @db.VarChar(256)
   ITHALAT_DURUM_TANIMLAR     ITHALAT_DURUM_TANIMLAR @relation(fields: [ith_durum_durum], references: [ith_durum_tanim_id], onUpdate: Restrict, map: "ITHALAT_DURUMLAR_ibfk_3")
   ITHALATLAR                 ITHALATLAR             @relation(fields: [ith_durum_ithalat], references: [ith_id], onDelete: Cascade, map: "ITHALAT_DURUMLAR_ibfk_1")
-  PERSONELLER                PERSONELLER            @relation(fields: [ith_durum_olusturan], references: [personel_id], onUpdate: Restrict, map: "ITHALAT_DURUMLAR_ibfk_2")
+  Personeller                Personeller            @relation(fields: [ith_durum_olusturan], references: [personel_id], onUpdate: Restrict, map: "ITHALAT_DURUMLAR_ibfk_2")
 
   @@index([ith_durum_ithalat], map: "ITHALAT_DURUMLAR_ibfk_1")
   @@index([ith_durum_durum], map: "ITHALAT_DURUMLAR_ibfk_3")
@@ -296,7 +296,7 @@ model KISILER {
   kisi_durum       Int
   KISI_DURUMLAR    KISI_DURUMLAR     @relation(fields: [kisi_durum], references: [kdurum_id], onUpdate: Restrict, map: "KISILER_ibfk_4")
   FIRMALAR         FIRMALAR          @relation(fields: [kisi_firma], references: [firma_id], onUpdate: Restrict, map: "KISILER_ibfk_2")
-  PERSONELLER      PERSONELLER       @relation(fields: [kisi_olusturan], references: [personel_id], onUpdate: Restrict, map: "KISILER_ibfk_1")
+  Personeller      Personeller       @relation(fields: [kisi_olusturan], references: [personel_id], onUpdate: Restrict, map: "KISILER_ibfk_1")
   KISI_POZISYONLAR KISI_POZISYONLAR  @relation(fields: [kisi_pozisyon], references: [kpoz_id], onUpdate: Restrict, map: "KISILER_ibfk_3")
   ILETISIMLER      ILETISIMLER[]
   SERVIS_KAYITLAR  SERVIS_KAYITLAR[]
@@ -328,18 +328,18 @@ model ODEME_PLANLARI {
 }
 
 model Oncelikler {
-  id               Int        @id @default(autoincrement())
-  isim             String     @db.VarChar(24)
-  aciklama         String?    @db.VarChar(256)
-  simge            String     @default("picture-outline") @db.VarChar(24)
-  renk             String     @default("info") @db.VarChar(24)
-  silindi          Boolean    @default(false)
-  Gorevler         Gorevler[]
+  id       Int        @id @default(autoincrement())
+  isim     String     @db.VarChar(24)
+  aciklama String?    @db.VarChar(256)
+  simge    String     @default("picture-outline") @db.VarChar(24)
+  renk     String     @default("info") @db.VarChar(24)
+  silindi  Boolean    @default(false)
+  Gorevler Gorevler[]
 
   @@map("ONCELIKLER")
 }
 
-model PERSONELLER {
+model Personeller {
   personel_id                                          Int                @id @default(autoincrement())
   personel_ad                                          String             @db.VarChar(50)
   personel_soyad                                       String             @db.VarChar(24)
@@ -366,16 +366,18 @@ model PERSONELLER {
   SERVIS_KAYITLAR                                      SERVIS_KAYITLAR[]
   URUNLER                                              URUNLER[]
   URUN_TAKIPLERI                                       URUN_TAKIPLERI[]
-  YORUMLAR                                             YORUMLAR[]
+  Yorumlar                                             Yorumlar[]
+
 
   @@index([personel_unvan], map: "personel_pozisyon")
+  @@map("PERSONELLER")
 }
 
 model PERSONEL_UNVANLAR {
   punvan_id       Int           @id @default(autoincrement())
   punvan_isim     String        @unique(map: "punvan_isim") @db.VarChar(50)
   punvan_aciklama String?       @db.VarChar(250)
-  PERSONELLER     PERSONELLER[]
+  Personeller     Personeller[]
 }
 
 model Projeler {
@@ -388,7 +390,7 @@ model Projeler {
   renk             String?     @db.VarChar(16)
   sonlandi         Boolean     @default(false)
   silindi          Boolean     @default(false)
-  Olusturan        PERSONELLER @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "PROJELER_ibfk_1")
+  Olusturan        Personeller @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "PROJELER_ibfk_1")
   Gorevler         Gorevler[]
 
 
@@ -420,7 +422,7 @@ model SATIS_TEKLIFLERI {
   FIRMALAR                 FIRMALAR               @relation(fields: [steklif_firma], references: [firma_id], onDelete: Cascade, onUpdate: Restrict, map: "SATIS_TEKLIFLERI_ibfk_2")
   GONDERIM_TIPLERI         GONDERIM_TIPLERI       @relation(fields: [steklif_gonderim], references: [gon_tip_id], onUpdate: Restrict, map: "SATIS_TEKLIFLERI_ibfk_4")
   ODEME_PLANLARI           ODEME_PLANLARI         @relation(fields: [steklif_odeme_plan], references: [oplan_id], onUpdate: Restrict, map: "SATIS_TEKLIFLERI_ibfk_3")
-  PERSONELLER              PERSONELLER            @relation(fields: [steklif_olusturan], references: [personel_id], onUpdate: Restrict, map: "SATIS_TEKLIFLERI_ibfk_1")
+  Personeller              Personeller            @relation(fields: [steklif_olusturan], references: [personel_id], onUpdate: Restrict, map: "SATIS_TEKLIFLERI_ibfk_1")
   SATIS_TEKLIF_NOTLAR      SATIS_TEKLIF_NOTLAR[]
   SATIS_TEKLIF_URUNLER     SATIS_TEKLIF_URUNLER[]
 
@@ -483,7 +485,7 @@ model SERVIS_DURUMLAR {
   servisdurum_durum            Int                   @default(1)
   servisdurum_aciklama         String?               @db.VarChar(120)
   SERVIS_DURUM_TANIMLAR        SERVIS_DURUM_TANIMLAR @relation(fields: [servisdurum_durum], references: [servisdurumtanim_id], onDelete: Cascade, map: "SERVIS_DURUMLAR_ibfk_3")
-  PERSONELLER                  PERSONELLER           @relation(fields: [servisdurum_olusturan], references: [personel_id], onUpdate: Restrict, map: "SERVIS_DURUMLAR_ibfk_2")
+  Personeller                  Personeller           @relation(fields: [servisdurum_olusturan], references: [personel_id], onUpdate: Restrict, map: "SERVIS_DURUMLAR_ibfk_2")
   SERVIS_KAYITLAR              SERVIS_KAYITLAR       @relation(fields: [servisdurum_servis], references: [srv_id], onDelete: Cascade, map: "SERVIS_DURUMLAR_ibfk_1")
 
   @@index([servisdurum_servis], map: "SERVIS_DURUMLAR_ibfk_1")
@@ -518,7 +520,7 @@ model SERVIS_KAYITLAR {
   KARGO_TANIMLAR_KARGO_TANIMLARToSERVIS_KAYITLAR_srv_gidenkargo KARGO_TANIMLAR?           @relation("KARGO_TANIMLARToSERVIS_KAYITLAR_srv_gidenkargo", fields: [srv_gidenkargo], references: [kargotanim_id], onDelete: Restrict, onUpdate: Restrict, map: "SERVIS_KAYITLAR_ibfk_5")
   FIRMALAR                                                      FIRMALAR                  @relation(fields: [srv_musteri], references: [firma_id], onUpdate: Restrict, map: "SERVIS_KAYITLAR_ibfk_2")
   KISILER                                                       KISILER?                  @relation(fields: [srv_musteri_yetkili], references: [kisi_id], onDelete: Restrict, onUpdate: Restrict, map: "SERVIS_KAYITLAR_ibfk_3")
-  PERSONELLER                                                   PERSONELLER               @relation(fields: [srv_olusturan], references: [personel_id], onUpdate: Restrict, map: "SERVIS_KAYITLAR_ibfk_1")
+  Personeller                                                   Personeller               @relation(fields: [srv_olusturan], references: [personel_id], onUpdate: Restrict, map: "SERVIS_KAYITLAR_ibfk_1")
   SERVIS_DEGISEN_PARCALAR                                       SERVIS_DEGISEN_PARCALAR[]
   SERVIS_DURUMLAR                                               SERVIS_DURUMLAR[]
 
@@ -550,7 +552,7 @@ model URUNLER {
   urun_miktar             Int?                      @default(0)
   BIRIMLER                BIRIMLER                  @relation(fields: [urun_birim], references: [birim_id], onUpdate: Restrict, map: "URUNLER_ibfk_1")
   URUN_GRUPLARI           URUN_GRUPLARI             @relation(fields: [urun_grup], references: [ugrup_id], onUpdate: Restrict, map: "URUNLER_ibfk_2")
-  PERSONELLER             PERSONELLER               @relation(fields: [urun_olusturan], references: [personel_id], onUpdate: Restrict, map: "URUNLER_ibfk_3")
+  Personeller             Personeller               @relation(fields: [urun_olusturan], references: [personel_id], onUpdate: Restrict, map: "URUNLER_ibfk_3")
   SATIS_TEKLIF_URUNLER    SATIS_TEKLIF_URUNLER[]
   SERVIS_DEGISEN_PARCALAR SERVIS_DEGISEN_PARCALAR[]
   URUN_TAKIPLERI          URUN_TAKIPLERI[]
@@ -573,23 +575,25 @@ model URUN_TAKIPLERI {
   utakip_olusturma_tarihi DateTime    @default(now()) @db.DateTime(0)
   utakip_personel         Int
   utakip_urun             String      @db.VarChar(24)
-  PERSONELLER             PERSONELLER @relation(fields: [utakip_personel], references: [personel_id], onUpdate: Restrict, map: "URUN_TAKIPLERI_ibfk_1")
+  Personeller             Personeller @relation(fields: [utakip_personel], references: [personel_id], onUpdate: Restrict, map: "URUN_TAKIPLERI_ibfk_1")
   URUNLER                 URUNLER     @relation(fields: [utakip_urun], references: [urun_kod], onUpdate: Restrict, map: "URUN_TAKIPLERI_ibfk_2")
 
   @@index([utakip_personel], map: "utakip_personel")
   @@index([utakip_urun], map: "utakip_urun")
 }
 
-model YORUMLAR {
+model Yorumlar {
   id               Int              @id @unique(map: "YORUMLAR_id_uindex") @default(autoincrement())
   olusturan        Int
   olusturma_tarihi DateTime         @default(now()) @db.DateTime(0)
   yorum            String?          @db.Text
   silindi          Boolean          @default(false)
-  PERSONELLER      PERSONELLER      @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "YORUMLAR_PERSONELLER_personel_id_fk")
+  Olusturan        Personeller      @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "YORUMLAR_PERSONELLER_personel_id_fk")
   GOREV_YORUMLAR   GOREV_YORUMLAR[]
 
+
   @@index([olusturan], map: "YORUMLAR_PERSONELLER_personel_id_fk")
+  @@map("YORUMLAR")
 }
 
 model KARGO_YOKSAYILACAKLAR {
