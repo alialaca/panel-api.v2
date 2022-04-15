@@ -24,11 +24,13 @@ app.use(JWT({
     }
 ))
 
-app.use('/proje', Routes.proje);
+app.use('/atama', Routes.atama);
+app.use('/oncelik', Routes.oncelik);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  next(createError(404));
+    console.log(req.originalUrl)
+    next(createError(404));
 });
 
 // error handler

@@ -1,5 +1,2 @@
-const proje = require('./proje')
-
-module.exports = {
-  proje
-}
+module.exports.atama = require('./atama.route')
+module.exports.oncelik = require('./oncelik.route')

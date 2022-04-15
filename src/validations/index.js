@@ -1,0 +1,1 @@
+module.exports.atamaValidation = require('./atama.validation')
