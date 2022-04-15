@@ -1,5 +1,6 @@
 const BaseModel = require('../../../src/utils/classes/baseModel')
 const BaseService = require('../../../src/utils/classes/baseService')
+const BaseController = require('../../../src/utils/classes/baseController')
 const {projeService} = require("../../../src/services");
 
 describe('Base Classes', () => {
@@ -163,5 +164,22 @@ describe('Base Classes', () => {
             expect(silinenProje.id).toBe(proje.id)
             expect(silinenProje).toBeDefined()
         })
+    })
+
+    describe('Base Controller', () => {
+        let controller
+        let kayit
+        test('Controller oluşturulabiliyor olmalı', () => {
+            controller = new BaseController(projeService)
+
+            expect(controller).toBeDefined()
+        })
+
+        // test('list() metodu çalışıyor olmalı', async () => {
+        //     const kayitlar = await controller.list(null, null, null)
+        //
+        //     expect(kayitlar).toBeDefined()
+        //     expect(kayitlar.length).toBeGreaterThanOrEqual(0)
+        // })
     })
 })
