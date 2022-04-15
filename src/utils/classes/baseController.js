@@ -26,7 +26,6 @@ class BaseController {
     find(req, res, next){
         this.service.find({id: req.params.id})
             .then( response => {
-                console.log("response", response)
                 if (response){
                     res.status(httpStatus.OK).json(response)
                 } else {
@@ -45,7 +44,13 @@ class BaseController {
             .then( response => {
                 res.status(200).send(response)
             }).catch( error => {
-            res.status(500).send(error)
+            if (error.code === "P2025") {
+                res.status(httpStatus.NOT_FOUND).json({
+                    message: "Kayıt bulunamadı"
+                })
+            } else {
+                res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error)
+            }
         })
     }
 
