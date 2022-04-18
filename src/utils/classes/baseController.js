@@ -15,6 +15,7 @@ class BaseController {
     }
 
     create(req, res, next){
+        console.log(req.body)
         this.service.create(req.body)
             .then( response => {
                 res.status(200).send(response)
@@ -42,14 +43,14 @@ class BaseController {
     update(req, res, next){
         this.service.update({...req.body, ...req.params})
             .then( response => {
-                res.status(200).send(response)
+                res.status(httpStatus.OK).json(response)
             }).catch( error => {
             if (error.code === "P2025") {
                 res.status(httpStatus.NOT_FOUND).json({
                     message: "Kayıt bulunamadı"
                 })
             } else {
-                res.status(httpStatus.INTERNAL_SERVER_ERROR).send(error)
+                res.status(httpStatus.INTERNAL_SERVER_ERROR).json(error)
             }
         })
     }
