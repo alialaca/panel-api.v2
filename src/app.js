@@ -26,6 +26,7 @@ app.use(JWT({
 
 app.use('/atama', Routes.atama);
 app.use('/oncelik', Routes.oncelik);
+app.use('/durum', Routes.durum);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
