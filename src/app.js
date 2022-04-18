@@ -28,6 +28,7 @@ app.use('/atama', Routes.atama);
 app.use('/oncelik', Routes.oncelik);
 app.use('/durum', Routes.durum);
 app.use('/yorum', Routes.yorum);
+app.use('/etiket', Routes.etiket);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

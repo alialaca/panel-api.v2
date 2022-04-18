@@ -52,16 +52,18 @@ model DurumTipleri {
   @@map("DURUM_TIPLERI")
 }
 
-model ETIKETLER {
+model Etiketler {
   id               Int               @id @unique(map: "ETIKETLER_id_uindex") @default(autoincrement())
   isim             String            @unique(map: "ETIKETLER_isim_uindex") @db.VarChar(48)
   olusturan        Int
   olusturma_tarihi DateTime?         @default(now()) @db.DateTime(0)
   silindi          Boolean           @default(false)
-  Personeller      Personeller       @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "ETIKETLER_PERSONELLER_personel_id_fk")
+  Olusturan        Personeller       @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "ETIKETLER_PERSONELLER_personel_id_fk")
   GOREV_ETIKETLER  GOREV_ETIKETLER[]
 
+
   @@index([olusturan], map: "ETIKETLER_PERSONELLER_personel_id_fk")
+  @@map("ETIKETLER")
 }
 
 model FIRMALAR {
@@ -176,7 +178,7 @@ model GOREV_ETIKETLER {
   olusturma_tarihi DateTime? @default(now()) @db.DateTime(0)
   gorev            Int
   etiket           Int
-  ETIKETLER        ETIKETLER @relation(fields: [etiket], references: [id], onUpdate: Restrict, map: "GOREV_ETIKETLER_ETIKETLER_id_fk")
+  Etiket           Etiketler @relation(fields: [etiket], references: [id], onUpdate: Restrict, map: "GOREV_ETIKETLER_ETIKETLER_id_fk")
   Gorevler         Gorevler  @relation(fields: [gorev], references: [id], onUpdate: Restrict, map: "GOREV_ETIKETLER_GOREVLER_id_fk")
 
   @@unique([gorev, etiket], map: "GOREV_ETIKETLER_gorev_etiket_uindex")
@@ -350,7 +352,7 @@ model Personeller {
   personel_mikrokod                                    String?            @db.VarChar(3)
   personel_durum                                       Boolean            @default(true)
   PERSONEL_UNVANLAR                                    PERSONEL_UNVANLAR  @relation(fields: [personel_unvan], references: [punvan_id], onUpdate: Restrict, map: "PERSONELLER_ibfk_1")
-  ETIKETLER                                            ETIKETLER[]
+  ETIKETLER                                            Etiketler[]
   FIRMALAR                                             FIRMALAR[]
   Gorevler                                             Gorevler[]
   GOREV_ATAMALAR_GOREV_ATAMALAR_atananToPERSONELLER    GOREV_ATAMALAR[]   @relation("GOREV_ATAMALAR_atananToPERSONELLER")

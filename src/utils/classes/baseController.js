@@ -15,7 +15,6 @@ class BaseController {
     }
 
     create(req, res, next){
-        console.log(req.body)
         this.service.create(req.body)
             .then( response => {
                 res.status(200).send(response)
