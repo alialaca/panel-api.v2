@@ -1,17 +1,15 @@
-const ProjeModel = require('../models/proje.model')
+const BaseController = require('../utils/classes/baseController')
+const { projeService } = require('../services')
 
-const liste = () => {
-    return ProjeModel.liste()
+class ProjeController extends BaseController{
+    constructor() {
+        super(projeService);
+    }
+
+    create(req, res, next) {
+        req.body.olusturan = parseInt(req.user.id)
+        super.create(req, res, next);
+    }
 }
 
-const ekle = (data) => {
-    return ProjeModel.ekle({
-        isim: 'Test projesi',
-        olusturan: 24
-    })
-}
-
-module.exports = {
-    liste,
-    ekle
-}
+module.exports = new ProjeController()

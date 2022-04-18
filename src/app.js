@@ -24,6 +24,7 @@ app.use(JWT({
     }
 ))
 
+app.use('/proje', Routes.proje);
 app.use('/atama', Routes.atama);
 app.use('/oncelik', Routes.oncelik);
 app.use('/durum', Routes.durum);
