@@ -30,6 +30,7 @@ app.use('/oncelik', Routes.oncelik);
 app.use('/durum', Routes.durum);
 app.use('/yorum', Routes.yorum);
 app.use('/etiket', Routes.etiket);
+app.use('/gorev', Routes.gorev);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

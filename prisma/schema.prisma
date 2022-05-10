@@ -61,7 +61,6 @@ model Etiketler {
   Olusturan        Personeller       @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "ETIKETLER_PERSONELLER_personel_id_fk")
   GOREV_ETIKETLER  GOREV_ETIKETLER[]
 
-
   @@index([olusturan], map: "ETIKETLER_PERSONELLER_personel_id_fk")
   @@map("ETIKETLER")
 }
@@ -115,11 +114,11 @@ model Gorevler {
   olusturma_tarihi DateTime          @default(now()) @db.DateTime(0)
   baslangic_tarihi DateTime?         @db.DateTime(0)
   bitis_tarihi     DateTime?         @db.DateTime(0)
-  gorev_tip        Int
+  gorev_tip        Int?
   oncelik          Int
   ustgorev         Int?
   silindi          Boolean           @default(false)
-  Tip              GOREV_TIPLERI     @relation(fields: [gorev_tip], references: [gtip_id], onUpdate: Restrict, map: "GOREVLER_ibfk_3")
+  Tip              GOREV_TIPLERI?    @relation(fields: [gorev_tip], references: [gtip_id], onDelete: Restrict, onUpdate: Restrict, map: "GOREVLER_ibfk_3")
   Olusturan        Personeller       @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "GOREVLER_ibfk_1")
   Oncelik          Oncelikler        @relation(fields: [oncelik], references: [id], onUpdate: Restrict, map: "GOREVLER_ibfk_4")
   Proje            Projeler          @relation(fields: [proje], references: [id], onDelete: Cascade, onUpdate: Restrict, map: "GOREVLER_ibfk_2")
@@ -162,9 +161,9 @@ model GOREV_DURUMLAR {
   olusturma_tarihi     DateTime?        @default(now()) @db.DateTime(0)
   gorev                Int
   durum                Int
-  GOREV_DURUMLAR       GOREV_DURUMLAR   @relation("GOREV_DURUMLARToGOREV_DURUMLAR_durum", fields: [durum], references: [id], onDelete: Cascade, map: "GOREV_DURUMLAR_GOREV_DURUMLAR_id_fk")
-  Gorevler             Gorevler         @relation(fields: [gorev], references: [id], onDelete: Cascade, map: "GOREV_DURUMLAR_GOREVLER_id_fk")
-  Personeller          Personeller      @relation(fields: [olusturan], references: [personel_id], onDelete: Cascade, map: "GOREV_DURUMLAR_PERSONELLER_personel_id_fk")
+  Durum                GOREV_DURUMLAR   @relation("GOREV_DURUMLARToGOREV_DURUMLAR_durum", fields: [durum], references: [id], onDelete: Cascade, map: "GOREV_DURUMLAR_GOREV_DURUMLAR_id_fk")
+  Gorev                Gorevler         @relation(fields: [gorev], references: [id], onDelete: Cascade, map: "GOREV_DURUMLAR_GOREVLER_id_fk")
+  Olusturan            Personeller      @relation(fields: [olusturan], references: [personel_id], onDelete: Cascade, map: "GOREV_DURUMLAR_PERSONELLER_personel_id_fk")
   other_GOREV_DURUMLAR GOREV_DURUMLAR[] @relation("GOREV_DURUMLARToGOREV_DURUMLAR_durum")
 
   @@index([gorev], map: "GOREV_DURUMLAR_GOREVLER_id_fk")
@@ -189,6 +188,9 @@ model GOREV_TIPLERI {
   gtip_id       Int        @id @default(autoincrement())
   gtip_isim     String     @db.VarChar(24)
   gtip_aciklama String?    @db.VarChar(256)
+  simge         String?    @db.VarChar(48)
+  renk          String?    @db.VarChar(10)
+  silindi       Boolean    @default(false)
   Gorevler      Gorevler[]
 }
 
@@ -370,7 +372,6 @@ model Personeller {
   URUN_TAKIPLERI                                       URUN_TAKIPLERI[]
   Yorumlar                                             Yorumlar[]
 
-
   @@index([personel_unvan], map: "personel_pozisyon")
   @@map("PERSONELLER")
 }
@@ -394,7 +395,6 @@ model Projeler {
   silindi          Boolean     @default(false)
   Olusturan        Personeller @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "PROJELER_ibfk_1")
   Gorevler         Gorevler[]
-
 
   @@index([olusturan], map: "proje_olusturan")
   @@map("PROJELER")
@@ -450,7 +450,7 @@ model SATIS_TEKLIF_URUNLER {
   sturun_urun      Int
   sturun_teklif    Int
   sturun_miktar    Int              @default(0)
-  sturun_fiyat     Decimal          @default(0.000) @db.Decimal(10, 3)
+  sturun_fiyat     Decimal          @default(0.00000) @db.Decimal(10, 5)
   sturun_sira      Int
   SATIS_TEKLIFLERI SATIS_TEKLIFLERI @relation(fields: [sturun_teklif], references: [steklif_id], onDelete: Cascade, onUpdate: Restrict, map: "SATIS_TEKLIF_URUNLER_ibfk_1")
   URUNLER          URUNLER          @relation(fields: [sturun_urun], references: [urun_id], onDelete: Cascade, onUpdate: Restrict, map: "SATIS_TEKLIF_URUNLER_ibfk_2")
@@ -592,7 +592,6 @@ model Yorumlar {
   silindi          Boolean          @default(false)
   Olusturan        Personeller      @relation(fields: [olusturan], references: [personel_id], onUpdate: Restrict, map: "YORUMLAR_PERSONELLER_personel_id_fk")
   GOREV_YORUMLAR   GOREV_YORUMLAR[]
-
 
   @@index([olusturan], map: "YORUMLAR_PERSONELLER_personel_id_fk")
   @@map("YORUMLAR")
